@@ -1,0 +1,85 @@
+import java.util.Scanner;
+
+class Dijkstra {
+    final static int INFINITY = 9999, MAX = 10;
+
+    static void dijkstra(int[][] G, int n, int startnode) {
+        int[] distance = new int[n];
+        int[] pred = new int[n];
+        boolean[] visited = new boolean[n];
+        int count, mindistance, nextnode = 0;
+
+        int[][] cost = new int[n][n];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (G[i][j] == 0)
+                    cost[i][j] = INFINITY;
+                else
+                    cost[i][j] = G[i][j];
+            }
+        }
+
+        for (int i = 0; i < n; i++) {
+            distance[i] = cost[startnode][i];
+            pred[i] = startnode;
+            visited[i] = false;
+        }
+
+        distance[startnode] = 0;
+        visited[startnode] = true;
+        count = 1;
+
+        while (count < n - 1) {
+            mindistance = INFINITY;
+            for (int i = 0; i < n; i++) {
+                if (distance[i] < mindistance && !visited[i]) {
+                    mindistance = distance[i];
+                    nextnode = i;
+                }
+            }
+
+            visited[nextnode] = true;
+            for (int i = 0; i < n; i++) {
+                if (!visited[i] && (mindistance + cost[nextnode][i] < distance[i])) {
+                    distance[i] = mindistance + cost[nextnode][i];
+                    pred[i] = nextnode;
+                }
+            }
+            count++;
+        }
+
+        for (int i = 0; i < n; i++) {
+            if (i != startnode) {
+                System.out.println("Distance of node " + i + " = " + distance[i]);
+                System.out.print("Path = " + i);
+                int j = i;
+                while (j != startnode) {
+                    j = pred[j];
+                    System.out.print(" <- " + j);
+                }
+                System.out.println();
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Enter number of vertices: ");
+        int n = scanner.nextInt();
+        int[][] G = new int[n][n];
+
+        System.out.println("Enter the adjacency matrix:");
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                G[i][j] = scanner.nextInt();
+            }
+        }
+
+        System.out.print("Enter the starting node: ");
+        int u = scanner.nextInt();
+
+        dijkstra(G, n, u);
+        scanner.close();
+    }
+}
