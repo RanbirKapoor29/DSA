@@ -89,10 +89,6 @@ int main() {
     // Sort jobs by profit in descending order
     qsort(jobs, n, sizeof(Job), compare);
 
-    printf("%10s %10s %10s\n", "Job", "Deadline", "Profit");
-    for (int i = 0; i < n; i++) {
-        printf("%10s %10d %10d\n", jobs[i].id, jobs[i].deadline, jobs[i].profit);
-    }
 
     jobSequencingWithDeadline(jobs, n);
     return 0;
