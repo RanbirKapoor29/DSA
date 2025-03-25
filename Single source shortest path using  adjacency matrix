@@ -1,85 +1,87 @@
-import java.util.Scanner;
+#include <stdio.h>
+#define INFINITY 9999
+#define MAX 10
 
-class Dijkstra {
-    final static int INFINITY = 9999, MAX = 10;
+void dijkstra(int G[MAX][MAX], int n, int startnode) {
+    int distance[MAX], pred[MAX];
+    int visited[MAX] = {0};
+    int cost[MAX][MAX];
+    int count, mindistance, nextnode = 0;
 
-    static void dijkstra(int[][] G, int n, int startnode) {
-        int[] distance = new int[n];
-        int[] pred = new int[n];
-        boolean[] visited = new boolean[n];
-        int count, mindistance, nextnode = 0;
-
-        int[][] cost = new int[n][n];
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                if (G[i][j] == 0)
-                    cost[i][j] = INFINITY;
-                else
-                    cost[i][j] = G[i][j];
-            }
-        }
-
-        for (int i = 0; i < n; i++) {
-            distance[i] = cost[startnode][i];
-            pred[i] = startnode;
-            visited[i] = false;
-        }
-
-        distance[startnode] = 0;
-        visited[startnode] = true;
-        count = 1;
-
-        while (count < n - 1) {
-            mindistance = INFINITY;
-            for (int i = 0; i < n; i++) {
-                if (distance[i] < mindistance && !visited[i]) {
-                    mindistance = distance[i];
-                    nextnode = i;
-                }
-            }
-
-            visited[nextnode] = true;
-            for (int i = 0; i < n; i++) {
-                if (!visited[i] && (mindistance + cost[nextnode][i] < distance[i])) {
-                    distance[i] = mindistance + cost[nextnode][i];
-                    pred[i] = nextnode;
-                }
-            }
-            count++;
-        }
-
-        for (int i = 0; i < n; i++) {
-            if (i != startnode) {
-                System.out.println("Distance of node " + i + " = " + distance[i]);
-                System.out.print("Path = " + i);
-                int j = i;
-                while (j != startnode) {
-                    j = pred[j];
-                    System.out.print(" <- " + j);
-                }
-                System.out.println();
-            }
+    // Initialize cost matrix
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            if (G[i][j] == 0)
+                cost[i][j] = INFINITY;
+            else
+                cost[i][j] = G[i][j];
         }
     }
 
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
+    // Initialize distances, predecessors, and visited array
+    for (int i = 0; i < n; i++) {
+        distance[i] = cost[startnode][i];
+        pred[i] = startnode;
+        visited[i] = 0;
+    }
 
-        System.out.print("Enter number of vertices: ");
-        int n = scanner.nextInt();
-        int[][] G = new int[n][n];
+    distance[startnode] = 0;
+    visited[startnode] = 1;
+    count = 1;
 
-        System.out.println("Enter the adjacency matrix:");
+    // Dijkstra's algorithm
+    while (count < n - 1) {
+        mindistance = INFINITY;
+
         for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                G[i][j] = scanner.nextInt();
+            if (distance[i] < mindistance && !visited[i]) {
+                mindistance = distance[i];
+                nextnode = i;
             }
         }
 
-        System.out.print("Enter the starting node: ");
-        int u = scanner.nextInt();
-
-        dijkstra(G, n, u);
-        scanner.close();
+        visited[nextnode] = 1;
+        for (int i = 0; i < n; i++) {
+            if (!visited[i] && (mindistance + cost[nextnode][i] < distance[i])) {
+                distance[i] = mindistance + cost[nextnode][i];
+                pred[i] = nextnode;
+            }
+        }
+        count++;
     }
+
+    // Print the shortest paths and distances
+    for (int i = 0; i < n; i++) {
+        if (i != startnode) {
+            printf("Distance of node %d = %d\n", i, distance[i]);
+            printf("Path = %d", i);
+            int j = i;
+            while (j != startnode) {
+                j = pred[j];
+                printf(" <- %d", j);
+            }
+            printf("\n");
+        }
+    }
+}
+
+int main() {
+    int n, startnode;
+    int G[MAX][MAX];
+
+    printf("Enter number of vertices: ");
+    scanf("%d", &n);
+
+    printf("Enter the adjacency matrix:\n");
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            scanf("%d", &G[i][j]);
+        }
+    }
+
+    printf("Enter the starting node: ");
+    scanf("%d", &startnode);
+
+    dijkstra(G, n, startnode);
+    return 0;
 }
