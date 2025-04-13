@@ -1,0 +1,69 @@
+#include <stdio.h>
+#include <limits.h>
+
+#define V 9  // Number of vertices
+
+// Function to find the vertex with the minimum distance
+int minDistance(int dist[], int sptSet[]) {
+    int min = INT_MAX, min_index;
+
+    for (int v = 0; v < V; v++) {
+        if (sptSet[v] == 0 && dist[v] <= min) {
+            min = dist[v];
+            min_index = v;
+        }
+    }
+    return min_index;
+}
+
+// Function to implement Dijkstra's algorithm
+void dijkstra(int graph[V][V], int src) {
+    int dist[V], sptSet[V];
+
+    // Initialize distances and set all vertices as unprocessed
+    for (int i = 0; i < V; i++) {
+        dist[i] = INT_MAX;  // Start with infinite distance
+        sptSet[i] = 0;      // Not yet processed
+    }
+
+    dist[src] = 0;  // Distance from source to itself is 0
+
+    // Find shortest path for all vertices
+    for (int count = 0; count < V - 1; count++) {
+        int u = minDistance(dist, sptSet);  // Get the vertex with the minimum distance
+        sptSet[u] = 1;  // Mark the vertex as processed
+
+        // Update the distances of adjacent vertices of the picked vertex
+        for (int v = 0; v < V; v++) {
+            if (!sptSet[v] && graph[u][v] && dist[u] != INT_MAX && dist[u] + graph[u][v] < dist[v]) {
+                dist[v] = dist[u] + graph[u][v];
+            }
+        }
+    }
+
+    // Output the result
+    printf("Vertex \t Distance from Source\n");
+    for (int i = 0; i < V; i++) {
+        printf("%d \t %d\n", i, dist[i]);
+    }
+}
+
+int main() {
+    // Graph representation using an adjacency matrix
+    int graph[V][V] = {
+        {0, 4, 0, 0, 0, 0, 0, 8, 0},
+        {4, 0, 8, 0, 0, 0, 0, 11, 0},
+        {0, 8, 0, 7, 0, 4, 0, 0, 2},
+        {0, 0, 7, 0, 9, 14, 0, 0, 0},
+        {0, 0, 0, 9, 0, 10, 0, 0, 0},
+        {0, 0, 4, 14, 10, 0, 2, 0, 0},
+        {0, 0, 0, 0, 0, 2, 0, 1, 6},
+        {8, 11, 0, 0, 0, 0, 1, 0, 7},
+        {0, 0, 2, 0, 0, 0, 6, 7, 0}
+    };
+
+    // Run Dijkstra's algorithm from source vertex 0
+    dijkstra(graph, 0);
+
+    return 0;
+}
