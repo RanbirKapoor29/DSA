@@ -1,0 +1,83 @@
+#include <stdio.h>
+
+#define MAX 100
+
+// Function to swap two elements in an array
+void swap(int *x, int *y) {
+    int temp = *x;
+    *x = *y;
+    *y = temp;
+}
+
+// Function to heapify the subtree rooted at index i
+void heapify(int arr[], int n, int i) {
+    int smallest = i;  // Initialize smallest as root
+    int left = 2 * i + 1;  // Left child
+    int right = 2 * i + 2; // Right child
+
+    // If left child is smaller than root
+    if (left < n && arr[left] < arr[smallest]) {
+        smallest = left;
+    }
+
+    // If right child is smaller than smallest
+    if (right < n && arr[right] < arr[smallest]) {
+        smallest = right;
+    }
+
+    // If smallest is not root, swap and heapify
+    if (smallest != i) {
+        swap(&arr[i], &arr[smallest]);
+        heapify(arr, n, smallest);
+    }
+}
+
+// Function to build a min heap from the given array
+void buildMinHeap(int arr[], int n) {
+    // Start from the last non-leaf node and heapify each node
+    for (int i = n / 2 - 1; i >= 0; i--) {
+        heapify(arr, n, i);
+    }
+}
+
+// Function to insert a new element into the Min Heap
+void insertMinHeap(int arr[], int *n, int value) {
+    // First, insert the new value at the end of the heap
+    arr[*n] = value;
+    (*n)++;
+
+    // Fix the Min Heap property by moving the new element up
+    int i = *n - 1;
+    while (i != 0 && arr[(i - 1) / 2] > arr[i]) {
+        swap(&arr[i], &arr[(i - 1) / 2]);
+        i = (i - 1) / 2;
+    }
+}
+
+// Function to print the heap
+void printHeap(int arr[], int n) {
+    for (int i = 0; i < n; i++) {
+        printf("%d ", arr[i]);
+    }
+    printf("\n");
+}
+
+int main() {
+    int arr[] = {3, 1, 6, 5, 2, 4};
+    int n = sizeof(arr) / sizeof(arr[0]);
+
+    // Build a Min Heap from the array
+    buildMinHeap(arr, n);
+
+    printf("Min Heap before insertion: \n");
+    printHeap(arr, n);
+
+    // Insert a new element into the Min Heap
+    int newElement = 0;
+    insertMinHeap(arr, &n, newElement);
+
+    printf("Min Heap after inserting %d: \n", newElement);
+    printHeap(arr, n);
+
+    return 0;
+}
