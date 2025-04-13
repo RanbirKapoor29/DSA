@@ -1,0 +1,57 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
+#define MAX_VERTICES 100
+
+// Function to perform BFS on the graph
+void BFS(int graph[MAX_VERTICES][MAX_VERTICES], int n, int start) {
+    // Create a visited array to keep track of visited vertices
+    bool visited[MAX_VERTICES] = {false};
+
+    // Create a queue for BFS
+    int queue[MAX_VERTICES];
+    int front = -1, rear = -1;
+
+    // Enqueue the start vertex
+    queue[++rear] = start;
+    visited[start] = true;
+
+    printf("Breadth-First Search starting from vertex %d: \n", start);
+
+    while (front != rear) {
+        // Dequeue a vertex from the queue
+        int current = queue[++front];
+
+        // Print the current vertex
+        printf("%d ", current);
+
+        // Enqueue all adjacent vertices of the dequeued vertex that haven't been visited yet
+        for (int i = 0; i < n; i++) {
+            if (graph[current][i] == 1 && !visited[i]) {
+                queue[++rear] = i;
+                visited[i] = true;
+            }
+        }
+    }
+    printf("\n");
+}
+
+int main() {
+    // Example adjacency matrix for the graph
+    int graph[MAX_VERTICES][MAX_VERTICES] = {
+        {0, 1, 1, 0, 0},
+        {1, 0, 1, 1, 0},
+        {1, 1, 0, 1, 1},
+        {0, 1, 1, 0, 1},
+        {0, 0, 1, 1, 0}
+    };
+
+    int n = 5; // Number of vertices in the graph
+    int startVertex = 0; // Starting vertex for BFS
+
+    // Call BFS function
+    BFS(graph, n, startVertex);
+
+    return 0;
+}
