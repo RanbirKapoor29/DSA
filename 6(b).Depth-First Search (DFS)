@@ -5,11 +5,9 @@
 
 // Function to perform DFS recursively
 void DFS(int graph[MAX_VERTICES][MAX_VERTICES], int n, int vertex, bool visited[MAX_VERTICES]) {
-    // Mark the current vertex as visited
     visited[vertex] = true;
-    printf("%d ", vertex); // Print the current vertex
+    printf("%c ", 'A' + vertex); // Print the current vertex as a letter
 
-    // Recur for all the adjacent vertices of the current vertex
     for (int i = 0; i < n; i++) {
         if (graph[vertex][i] == 1 && !visited[i]) {
             DFS(graph, n, i, visited); // Recursive call
@@ -28,12 +26,10 @@ int main() {
     };
 
     int n = 5; // Number of vertices in the graph
-    bool visited[MAX_VERTICES] = {false}; // Array to keep track of visited vertices
-    int startVertex = 0; // Starting vertex for DFS
+    bool visited[MAX_VERTICES] = {false}; // Visited array
+    int startVertex = 0; // Starting from vertex 0 (A)
 
-    printf("Depth-First Search starting from vertex %d: \n", startVertex);
-
-    // Call DFS function
+    printf("Depth-First Search starting from vertex %c: \n", 'A' + startVertex);
     DFS(graph, n, startVertex, visited);
 
     printf("\n");
