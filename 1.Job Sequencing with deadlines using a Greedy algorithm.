@@ -4,45 +4,55 @@
 
 typedef struct {
     char id[5];
-    int deadline, profit;
+    int deadline;
+    int profit;
 } Job;
 
+// Sort jobs in descending order of profit
 int compare(const void *a, const void *b) {
     return ((Job *)b)->profit - ((Job *)a)->profit;
 }
 
 void jobSequencing(Job jobs[], int n) {
     qsort(jobs, n, sizeof(Job), compare);
-    int maxProfit = 0, dmax = 0;
-    
-    for (int i = 0; i < n; i++)
-        if (jobs[i].deadline > dmax) dmax = jobs[i].deadline;
-    
-    int timeslot[dmax + 1];
-    memset(timeslot, -1, sizeof(timeslot));
-    
-    printf("\nRequired Jobs: ");
-    for (int i = 0, filled = 0; i < n && filled < dmax; i++) {
-        for (int k = jobs[i].deadline; k > 0; k--) {
-            if (timeslot[k] == -1) {
-                timeslot[k] = i;
-                printf("%s%s", jobs[i].id, (filled++ < dmax - 1) ? " --> " : "");
-                maxProfit += jobs[i].profit;
+
+    int maxDeadline = 0;
+    for (int i = 0; i < n; i++) {
+        if (jobs[i].deadline > maxDeadline)
+            maxDeadline = jobs[i].deadline;
+    }
+
+    int slots[maxDeadline + 1];
+    memset(slots, -1, sizeof(slots));
+
+    int totalProfit = 0;
+    printf("\nScheduled Jobs: ");
+
+    for (int i = 0; i < n; i++) {
+        for (int j = jobs[i].deadline; j > 0; j--) {
+            if (slots[j] == -1) {
+                slots[j] = i;
+                printf("%s ", jobs[i].id);
+                totalProfit += jobs[i].profit;
                 break;
             }
         }
     }
-    printf("\nMax Profit: %d\n", maxProfit);
+
+    printf("\nTotal Profit: %d\n", totalProfit);
 }
 
 int main() {
-    Job jobs[] = { 
-    {"j1", 2, 60},
-    {"j2", 1, 100},
-    {"j3", 3, 20},
-    {"j4", 2, 40}, 
-    {"j5", 1, 20} 
+    Job jobs[] = {
+        {"j1", 2, 60},
+        {"j2", 1, 100},
+        {"j3", 3, 20},
+        {"j4", 2, 40},
+        {"j5", 1, 20}
     };
-    jobSequencing(jobs, sizeof(jobs) / sizeof(jobs[0]));
+
+    int n = sizeof(jobs) / sizeof(jobs[0]);
+    jobSequencing(jobs, n);
+
     return 0;
 }
